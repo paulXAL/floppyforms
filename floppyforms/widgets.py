@@ -115,6 +115,16 @@ class Input(Widget):
         template_name = kwargs.pop('template_name', None)
         if template_name is None:
             template_name = self.template_name
+        ####################
+        # monstrosity hack #
+        # floppy forms crashes in django 2.1 when there is a "renderer" element in the kwargs dict .... so i kick it out
+        #
+        if django.VERSION > (2, 0):
+            print("\n\neliminate key: renderer  from kwargs in django 2.0 and above", kwargs)
+            print(kwargs["renderer"], "\n\n")
+            del kwargs["renderer"]
+        # monstrosity hack end #
+        ########################
         context = self.get_context(name, value, attrs=attrs or {}, **kwargs)
         context = flatten_contexts(self.context_instance, context)
         return loader.render_to_string(template_name, context)
